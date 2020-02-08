@@ -1,0 +1,3 @@
+---
+- include_tasks: install_deps.yml
+- include_tasks: install_go_exp.yml

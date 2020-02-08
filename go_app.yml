@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: yes
+  vars:
+    var_files: vault.yml
+  roles:
+    - { role: ansible-roles-delivery-app,
+        tags: [ 'haproxy', 'go_app', 'challenge_exp'] }
+
+

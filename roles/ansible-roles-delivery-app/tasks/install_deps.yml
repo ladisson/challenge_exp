@@ -1,0 +1,56 @@
+---
+- name: Install yum packages
+  package: 
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - haproxy
+    - git
+
+- name: Enable haproxy
+  systemd:
+    name: haproxy
+    enabled: yes
+  notify:
+    - start haproxy
+
+- name: Create private certs dir
+  file:
+    path: /etc/ssl/private
+    state: directory
+
+- name: Copy private SSL certificates from Ansible Vault
+  copy:
+    content: "{{ item.content }}"
+    dest: "/etc/ssl/private/{{ item.name }}"
+    owner: root
+    group: root
+  with_items:
+    - "{{ certificates }}"
+
+- name: copy haproxy config file
+  template: src=haproxy.cfg.j2 dest=/etc/haproxy/haproxy.cfg mode=0644
+  notify:
+    - restart haproxy 
+
+- name: "Unarchive go version - {{ go_version }}"
+  unarchive:
+    src: "{{ go_url }}"
+    dest: "/usr/local"
+    remote_src: yes
+
+- name: Set go to $GOROOT ENV
+  lineinfile:
+    path: /etc/profile
+    line: "export GOROOT={{ GOROOT }}"
+
+- name: Set go to $PATH ENV
+  lineinfile: 
+    path: /etc/profile
+    line: "export PATH={{ GOROOT }}/bin:$PATH"
+
+- name: Set go to $PATH ENV
+  lineinfile:
+    path: /etc/profile
+    line: "export PATH={{ GOROOT }}/bin:$PATH"
+

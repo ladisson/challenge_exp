@@ -1,0 +1,15 @@
+---
+- name: "start haproxy"
+  service: 
+    name: haproxy
+    state: started
+
+- name: "restart haproxy"
+  service: 
+    name: haproxy
+    state: restarted
+
+- name: "start go_exp"
+  service: 
+    name: go_exp
+    state: started  

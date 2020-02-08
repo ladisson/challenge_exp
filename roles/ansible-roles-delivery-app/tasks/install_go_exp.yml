@@ -1,0 +1,21 @@
+---
+- git: 
+    repo: "{{ go_exp_repo }}"
+    dest: /root/go_exp_app
+
+- name: "Unarchive go_exp"
+  unarchive:
+    src: "go_exp_app.tar.gz"
+    dest: "/root"
+
+- name: Installing go_exp
+  shell: "make && make install"
+  args:
+   chdir: /root/go_exp_app/
+  notify:
+    - start go_exp
+
+- name: Clear source code
+  file: 
+   path: /root/go_exp_app
+   state: absent
